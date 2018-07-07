@@ -1,0 +1,9 @@
+---
+buildName: "springboot-hello"
+codeReview: false
+links:
+  Git: "nullnull/springboot-hello.git"
+environments:
+  Testing: "microservice-book-testing"
+  Staging: "microservice-book-staging"
+  Production: "microservice-book-prod"

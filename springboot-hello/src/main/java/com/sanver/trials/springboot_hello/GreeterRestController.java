@@ -1,5 +1,9 @@
 package com.sanver.trials.springboot_hello;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,9 +45,14 @@ public class GreeterRestController {
 
 	@RequestMapping(value = "/greeting", method = RequestMethod.GET, produces = "text/plain")
 	public String greeting() {
-		String backendServiceUrl = String.format("http://%s:%d/backend/greeting?name=%s", backendServiceHost,
-				backendServicePort, saying);
-		BackendDTO response = template.getForObject(backendServiceUrl, BackendDTO.class, saying);
-		return response.getGreeting() + " at host: " + response.getIp();
+		String backendServiceUrl;
+		if (backendServicePort == 0) {
+			backendServiceUrl = String.format("http://%s/backend/greeting?name=%s", backendServiceHost, saying);
+		} else
+			backendServiceUrl = String.format("http://%s:%d/backend/greeting?name=%s", backendServiceHost,
+					backendServicePort, saying);
+		BackendDTO response = template.getForObject(backendServiceUrl, BackendDTO.class);
+		return response.getGreeting() + ". The address is " + response.getIp() + ".\nTime is "
+				+ LocalDateTime.ofInstant(Instant.ofEpochMilli(response.getTime()), ZoneId.systemDefault());
 	}
 }
